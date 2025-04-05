@@ -1,0 +1,351 @@
+/* 基本样式 */
+body {
+    background-color: #f8f9fa;
+}
+
+/* 播放器容器 */
+.player-wrapper {
+    position: relative;
+    width: 100%;
+    height: 90vh;
+    padding-bottom: 3vh; /* 16:9 宽高比 */
+    background-color: #000;
+}
+
+.player-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* 自定义播放器控件样式 */
+.plyr--full-ui {
+    border-radius: 0;
+}
+
+/* 动漫侧边栏样式 */
+.anime-item {
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.anime-item:hover {
+    background-color: #f8f9fa;
+}
+
+.anime-item.active {
+    background-color: #e9ecef;
+}
+
+.anime-cover {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.anime-info {
+    flex: 1;
+}
+
+.anime-title {
+    font-weight: 500;
+    margin: 0 0 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.anime-meta {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.anime-progress {
+    margin-top: 5px;
+    height: 5px;
+}
+
+/* 剧集网格样式 */
+.episode-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.episode-item {
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    text-align: center;
+    min-width: 80px;
+}
+
+.episode-item:hover {
+    background-color: #e0e0e0;
+}
+
+.episode-item.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.episode-item.watched {
+    position: relative;
+    border: 1px solid #28a745;
+}
+
+.episode-item.watched::after {
+    content: "✓";
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 10px;
+    color: #28a745;
+}
+
+.episode-item.active.watched::after {
+    color: white;
+}
+
+/* 搜索结果样式 */
+.search-result-item {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.search-result-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-result-item .card-img-top {
+    height: 250px;
+    object-fit: cover;
+}
+
+/* 大搜索框样式 */
+.search-form-large {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.search-form-large .form-control {
+    border-radius: 30px 0 0 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding-left: 20px;
+}
+
+.search-form-large .btn {
+    border-radius: 0 30px 30px 0;
+    min-width: 150px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 欢迎页面样式 */
+#welcomeScreen {
+    padding: 10px 0;
+}
+
+#welcomeScreen .display-1 {
+    margin-bottom: 30px;
+    color: #007bff;
+}
+
+/* 全屏模式 */
+.plyr--fullscreen-active .player-wrapper {
+    padding-top: 0;
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+    .episode-item {
+        min-width: 60px;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+    
+    .search-result-item .card-img-top {
+        height: 180px;
+    }
+    
+    .player-wrapper {
+        padding-bottom: 75%; /* 4:3 宽高比，在移动设备上更合适 */
+    }
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #212529;
+        color: #f8f9fa;
+    }
+    
+    .card {
+        background-color: #343a40;
+        border-color: #495057;
+    }
+    
+    .card-body, .card-header, .card-footer {
+        background-color: #343a40;
+        color: #f8f9fa;
+    }
+    
+    .text-muted {
+        color: #adb5bd !important;
+    }
+    
+    .episode-item {
+        background-color: #495057;
+        color: #f8f9fa;
+    }
+    
+    .episode-item:hover {
+        background-color: #6c757d;
+    }
+}
+
+/* 电视模式样式 */
+.tv-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: #000;
+}
+
+.tv-mode .player-wrapper {
+    padding-top: 0;
+    height: 100%;
+}
+
+.tv-mode-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 10000;
+}
+
+.tv-mode:hover .tv-mode-controls {
+    opacity: 1;
+}
+
+/* 隐藏侧边栏时内容宽度调整 */
+.sidebar-hidden {
+    display: none;
+}
+
+#mainContent.full-width {
+    width: 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+/* 增强缓存视频列表的样式 */
+.cached-videos-container {
+    margin-top: 1rem;
+}
+
+.cached-anime-card {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #007bff;
+}
+
+.cached-anime-title {
+    color: #343a40;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+}
+
+.cached-episodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+.cached-episode-item {
+    background-color: #007bff;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.cached-episode-item:hover {
+    background-color: #0069d9;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.cached-episode-item:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.cached-episode-item::before {
+    content: "\f144"; /* 播放图标 */
+    font-family: "bootstrap-icons";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    font-size: 1.5rem;
+    transition: opacity 0.2s;
+}
+
+.cached-episode-item:hover::before {
+    opacity: 0.8;
+}
+
+/* 修复 Plyr 播放器控制栏样式 */
+.plyr {
+    height: 100%;
+    width: 100%;
+}
+
+.plyr--video {
+    height: 100%;
+}
+
+.plyr__video-wrapper {
+    height: 100%;
+}
+
+/* 确保视频元素填充整个容器 */
+#player {
+    width: 100%;
+    height: 100%;
+    min-height: 400px; /* 设置最小高度 */
+} 

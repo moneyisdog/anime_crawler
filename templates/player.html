@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动漫播放</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
+    <link rel="stylesheet" href="/static/css/player.css">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <!-- 添加meta标签改进视频播放 -->
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-collection-play"></i> 动漫缓存器
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">搜索缓存</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/player">动漫播放</a>
+                    </li>
+                </ul>
+                <form class="d-flex" id="searchForm">
+                    <input class="form-control me-2" type="search" placeholder="搜索缓存动漫..." id="searchInput" required>
+                    <button class="btn btn-light" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 内容区域 -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 主内容区 -->
+            <div class="col-12" id="mainContent">
+                <!-- 欢迎界面 - 搜索提示 -->
+                <div id="welcomeScreen">
+                    
+                    <!-- 缓存视频列表 -->
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">已缓存的视频</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="cachedVideosContainer" class="cached-videos-container">
+                                            <!-- 缓存视频列表将通过JavaScript动态加载 -->
+                                            <div class="text-center p-4 text-muted">
+                                                <div class="spinner-border"></div>
+                                                <p class="mt-2">加载缓存视频中...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 播放界面 -->
+                <div id="playerScreen" style="display: none;">
+                    <!-- 视频播放器 -->
+                    <div class="card mb-4">
+                        <div class="card-body p-0">
+                            <div class="player-wrapper">
+                                <video id="player" playsinline controls crossorigin>
+                                    <source src="" type="video/mp4" id="videoSource">
+                                    <!-- 添加WebM格式支持 -->
+                                    <source src="" type="video/webm" id="videoSourceWebm">
+                                    <!-- 添加Ogg格式支持 -->
+                                    <source src="" type="video/ogg" id="videoSourceOgg">
+                                    <!-- 浏览器不支持视频标签时显示 -->
+                                    <p>您的浏览器不支持HTML5视频。<a href="" id="videoDownloadLink">点击下载</a></p>
+                                </video>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 id="currentEpisodeTitle">视频标题</h4>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline-primary" id="prevEpisode" disabled>
+                                        <i class="bi bi-skip-backward"></i> 上一集
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" id="nextEpisode" disabled>
+                                        下一集 <i class="bi bi-skip-forward"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 剧集选择器 -->
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜索结果模态框 -->
+    <div class="modal fade" id="searchResultModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">搜索结果</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="searchResultsGrid">
+                        <!-- 搜索结果会通过JavaScript动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 消息提示 -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastTitle">消息</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                操作成功！
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.min.js"></script>
+    <!-- 添加HLS.js支持 -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
+    <script src="/static/js/player.js"></script>
+</body>
+</html> 

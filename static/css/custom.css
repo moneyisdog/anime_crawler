@@ -1,0 +1,80 @@
+/* 下载进度卡片样式 */
+.progress-card {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.progress-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+.anime-progress-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.anime-progress-header img {
+    max-height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.episode-progress-card {
+    border: 1px solid #e3e6f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.episode-progress-card .card-body {
+    padding: 0.75rem;
+}
+
+.episode-progress-card h6 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.download-status {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.download-progress-container {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* 进度条动画效果 */
+.progress-bar.bg-info {
+    background-image: linear-gradient(45deg, 
+                      rgba(255,255,255,.15) 25%, 
+                      transparent 25%, 
+                      transparent 50%, 
+                      rgba(255,255,255,.15) 50%, 
+                      rgba(255,255,255,.15) 75%, 
+                      transparent 75%, 
+                      transparent);
+    background-size: 1rem 1rem;
+    animation: progress-bar-stripes 1s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+    from { background-position: 1rem 0; }
+    to { background-position: 0 0; }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .episode-progress-card {
+        margin-bottom: 10px;
+    }
+} 

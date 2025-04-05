@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动漫缓存器</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/crawler.css">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- 全屏加载器 -->
+    <div class="fullscreen-loading" id="fullscreenLoading" style="display: none;">
+        <div class="spinner-border text-light" role="status"></div>
+        <p>加载中，请稍候...</p>
+    </div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-collection-play"></i> 动漫缓存器
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">搜索缓存</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/player">动漫播放</a>
+                    </li>
+                </ul>
+                <form class="d-flex" id="searchForm">
+                    <input class="form-control me-2" type="search" placeholder="搜索动漫..." id="searchInput">
+                    <button class="btn btn-light" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- 主视图区域 -->
+        <div class="row">
+            <!-- 左侧面板：动漫列表 -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">动漫列表</h5>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="refreshAnimeList">
+                                <i class="bi bi-arrow-clockwise"></i> 刷新
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="anime-grid" id="animeList">
+                            <!-- 动漫列表会通过JavaScript动态加载 -->
+                            <div class="text-center p-4 text-muted">
+                                <div class="spinner-border"></div>
+                                <p class="mt-2">加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <nav>
+                            <ul class="pagination justify-content-center mb-0" id="pagination">
+                                <!-- 分页控件会通过JavaScript动态生成 -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧面板：任务管理 -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">任务管理</h5>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="refreshTasks">
+                                <i class="bi bi-arrow-clockwise"></i> 刷新
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="openCreateTaskModal">
+                                <i class="bi bi-plus-circle"></i> 新建任务
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush" id="tasksList">
+                            <!-- 任务列表会通过JavaScript动态加载 -->
+                            <div class="text-center p-4 text-muted">
+                                <div class="spinner-border"></div>
+                                <p class="mt-2">加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 动漫详情模态框 -->
+    <div class="modal fade" id="animeDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAnimeTitle">动漫详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <img src="" class="img-fluid rounded" id="modalAnimeCover" alt="封面">
+                        </div>
+                        <div class="col-md-8">
+                            <h4 id="modalAnimeTitleDetail"></h4>
+                            <p class="text-muted" id="modalAnimeInfo"></p>
+                            <p id="modalAnimeDesc"></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5>剧集列表</h5>
+                    <div class="mb-2">
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-primary" id="selectAllEpisodes">全选</button>
+                            <button type="button" class="btn btn-outline-primary" id="deselectAllEpisodes">取消选择</button>
+                            
+                        </div>
+                    </div>
+                    <div class="episode-grid" id="episodesList">
+                        <!-- 剧集列表会通过JavaScript动态加载 -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="batchCreateTask">批量缓存选中剧集</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务详情模态框 -->
+    <div class="modal fade" id="taskDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">任务详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody id="taskDetailTable">
+                            <!-- 任务详情会通过JavaScript动态加载 -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- 任务执行结果区域 -->
+                    <div id="taskResultsSection" style="display: none;">
+                        <h5 class="mt-4 mb-3">执行结果</h5>
+                        <div id="taskResultsList" class="border rounded">
+                            <!-- 任务执行结果会通过JavaScript动态加载 -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="executeTaskBtn">立即执行</button>
+                    <button type="button" class="btn btn-danger" id="deleteTaskBtn">删除任务</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建缓存任务模态框 -->
+    <div class="modal fade" id="createTaskModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">创建缓存任务</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createTaskForm">
+                        <input type="hidden" id="animeId" name="animeId">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">动漫标题</label>
+                            <input type="text" class="form-control" id="animeTitle" readonly>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">起始集数</label>
+                                <input type="number" class="form-control" id="startEpisode" name="startEpisode" min="1" value="1">
+                            </div>
+                            <div class="col">
+                                <label class="form-label">结束集数</label>
+                                <input type="number" class="form-control" id="endEpisode" name="endEpisode" min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="isPeriodic" name="isPeriodic">
+                            <label class="form-check-label" for="isPeriodic">周期性任务</label>
+                        </div>
+                        
+                        <div class="mb-3" id="dailyUpdateTimeDiv" style="display: none;">
+                            <label class="form-label">日更时间</label>
+                            <input type="time" class="form-control" id="dailyUpdateTime" name="dailyUpdateTime" value="10:00">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="submitCreateTask">创建任务</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 消息提示 -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastTitle">消息</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                操作成功！
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/crawler.js"></script>
+</body>
+</html> 
