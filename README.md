@@ -56,8 +56,8 @@
 1. 克隆仓库:
 
 ```bash
-git clone https://github.com/yourusername/anime-crawler.git
-cd anime-crawler
+git clone https://github.com/moneyisdog/anime_crawler.git
+cd anime_crawler
 ```
 
 2. 安装Python依赖:
@@ -102,7 +102,7 @@ pip install yt-dlp
 ```python
 # 基础URL配置
 BASE_URL = "https://yhdm.one"
-BASE_DOMAINS = ["yhdm.one", "yinghuavideo.com"]
+BASE_DOMAINS = ["yhdm.one"]
 
 # 数据库配置
 DB_PATH = "anime_crawler.db"
